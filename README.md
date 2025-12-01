@@ -59,18 +59,6 @@ military-time-validator/
 └── README.md
 ```
 
-## Approach
-
-This project validates military time by:
-
-1. Ensuring the input matches a strict pattern
-2. Extracting hours and minutes
-3. Checking numeric ranges for:
-
-   * Hours: 0–23
-   * Minutes: 0–59
-4. Returning a boolean result
-
 ## Getting Started
 
 ### Installation
