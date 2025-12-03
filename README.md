@@ -7,9 +7,9 @@ A stateless validator class used to determine whether a given string represents 
 This project provides a simple utility that validates military time ranges (e.g., `"01:12 - 14:32"`).
 The validator checks that:
 
-* Each time is in valid 24-hour notation (`HH:MM`)
-* Both times fall within allowed ranges (`00:00` to `23:59`)
-* The full string matches the expected `"HH:MM - HH:MM"` format
+- Each time is in valid 24-hour notation (`HH:MM`)
+- Both times fall within allowed ranges (`00:00` to `23:59`)
+- The full string matches the expected `"HH:MM - HH:MM"` format
 
 This utility is ideal for practicing string parsing, regex validation, and clean class design.
 
@@ -17,9 +17,9 @@ This utility is ideal for practicing string parsing, regex validation, and clean
 
 Military time is a timekeeping format where:
 
-* Hours range from **00** to **23**
-* Minutes range from **00** to **59**
-* No AM/PM suffix is used
+- Hours range from **00** to **23**
+- Minutes range from **00** to **59**
+- No AM/PM suffix is used
   Example: `"18:45"` represents 6:45 PM.
 
 A **military time range** simply consists of two valid times separated by `" - "`.
@@ -36,17 +36,17 @@ Examples:
 
 The validator supports:
 
-* Validation of individual military times
-* Validation of complete time ranges
-* Strict format checking (`HH:MM - HH:MM`)
-* Stateless implementation using a simple class with static methods
-* Full TypeScript type safety
+- Validation of individual military times
+- Validation of complete time ranges
+- Strict format checking (`HH:MM - HH:MM`)
+- Stateless implementation using a simple class with static methods
+- Full TypeScript type safety
 
 ## Tech Stack
 
-* TypeScript
-* Node.js
-* Jest (optional if you add tests)
+- TypeScript
+- Node.js
+- Jest (optional if you add tests)
 
 ## Project Structure
 
@@ -78,16 +78,25 @@ npm run test:dev
 
 ## API
 
-### `isValidRange(range: string): boolean`
+### `isValidRange(range: string): ValidationResult`
 
 **Parameters:**
 
-* `range (string)` – The time range to validate in `"HH:MM - HH:MM"` format
+`range (string)` – The time range to validate in `"HH:MM - HH:MM"` format
 
 **Returns:**
 
-* `true` if the time range is valid
-* `false` otherwise
+`ValidationResult` object describing whether the range is valid and any associated errors.
+
+```ts
+{
+   isValid: boolean,
+   errors: {
+      type: "invalid_format" | "invalid_time",
+      message: string,
+   }[]
+}
+```
 
 ## Usage
 
@@ -96,15 +105,7 @@ npm run test:dev
 ```ts
 import { MilitaryTimeValidator } from "./src/militaryTimeValidator";
 
-console.log(MilitaryTimeValidator.isValidRange("01:12 - 14:32")); // true
-console.log(MilitaryTimeValidator.isValidRange("25:00 - 12:23")); // false
-console.log(MilitaryTimeValidator.isValidRange("22:00 - 23:12")); // true
+console.log(MilitaryTimeValidator.isValidRange("01:12 - 14:32")); 
+console.log(MilitaryTimeValidator.isValidRange("25:00 - 12:23")); 
+console.log(MilitaryTimeValidator.isValidRange("22:00 - 23:12")); 
 ```
-
-## Learning Goals
-
-* Practice validating formatted input strings
-* Learn regex-based validation techniques
-* Implement stateless utility classes in TypeScript
-* Improve code readability and maintainability
-* Build simple reusable utilities useful for real-world projects
