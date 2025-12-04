@@ -5,6 +5,13 @@ describe("Military time validator", () => {
     it("knows that '01:12 - 14:32' is valid military time range format", () => {
       const result = MilitaryTimeValidator.isValidRange();
       expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it("knows that '01:12 -14:32' is valid military time range format", () => {
+      const result = MilitaryTimeValidator.isValidRange();
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
   });
 });
