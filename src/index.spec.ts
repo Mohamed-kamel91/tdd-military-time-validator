@@ -26,5 +26,16 @@ describe("Military time validator", () => {
         message: "Time range cannot be empty",
       });
     });
+
+    it("knows that whitespace-only time range is invalid", () => {
+      const result = MilitaryTimeValidator.isValidRange("  ");
+
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]).toEqual({
+        type: "invalid_format",
+        message: "Time range cannot be empty",
+      });
+    });
   });
 });
