@@ -40,6 +40,17 @@ describe("Military time validator", () => {
           message: "Time range must contain a '-' separator",
         });
       });
+
+      it("knows that time range missing dash (-) seperator such as '01:12' is invalid", () => {
+        const result = MilitaryTimeValidator.isValidRange("01:12");
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toHaveLength(1);
+        expect(result.errors[0]).toEqual({
+          type: "invalid_format",
+          message: "Time range must contain a '-' separator",
+        });
+      })
     });
   });
 });
