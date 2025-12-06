@@ -27,7 +27,7 @@ This project validates military time by:
 
 ## 1. Validate Time Range Format ("HH:MM - HH:MM")
 
-### Valid formats:
+### Valid formats: (DONE)
 
 - `"01:12 - 14:32"`
 - `"01:12 -14:32"`
@@ -35,7 +35,7 @@ This project validates military time by:
 - `"00:00-23:59"`
 - `" 22:22 - 02:43 "`
 
-#### Time range must not be empty
+#### Time range must not be empty (DONE)
 
 **Valid:**
 
@@ -56,7 +56,7 @@ This project validates military time by:
 - `"01:12 -14:32"`
 - `"01:12- 14:32"`
 
-**Invalid (missing '-'):**
+**Invalid (missing '-'):** (DONE)
 
 - `"17:23"` → invalid_format, missing '-' separator."
 - `"01:12 14:32"` → invalid_format, missing '-' separator."
