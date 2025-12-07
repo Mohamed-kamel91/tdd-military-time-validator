@@ -30,6 +30,12 @@ export class MilitaryTimeValidator {
       errors.push(TIME_RANGE_ERRORS.INVALID_SEPARATOR);
     }
 
+    const dashCount = (timeRange.match(/-/g) || []).length;
+
+    if (dashCount > 1) {
+      errors.push(TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR);
+    }
+
     return {
       isValid: errors.length === 0,
       errors,

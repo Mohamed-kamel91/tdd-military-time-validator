@@ -13,4 +13,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Only '-' separator is allowed",
   },
+  MULTIPLE_SEPERATOR: {
+    type: "invalid_format",
+    message: "Multiple '-' separator is not allowed",
+  },
 } as const satisfies Record<string, validationError>;

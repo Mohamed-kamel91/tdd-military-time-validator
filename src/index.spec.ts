@@ -57,6 +57,19 @@ describe("Military time validator", () => {
           }
         );
       });
+
+      describe("Time range must contain one '-' seperator only", () => {
+        it.each([["01:12 -- 14:32", "12:23 - 17:23 - 23:11"]])(
+          "returns error for time range '%s' with invalid separator '%p'",
+          (timeRange) => {
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR
+            );
+          }
+        );
+      });
     });
   });
 });
