@@ -38,6 +38,25 @@ describe("Military time validator", () => {
           }
         );
       });
+
+      describe("Only '-' seperator is allowed in time range", () => {
+        it.each([
+          ["01:12 / 14:32", "/"],
+          ["01:12 — 14:32", "—"],
+          ["01:12 | 14:32", "|"],
+          ["01:12 ~ 14:32", "~"],
+          ["01:12 to 14:32", "to"],
+        ])(
+          "returns error for time range '%s' with invalid separator '%p'",
+          (timeRange) => {
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              TIME_RANGE_ERRORS.INVALID_SEPARATOR
+            );
+          }
+        );
+      });
     });
   });
 });

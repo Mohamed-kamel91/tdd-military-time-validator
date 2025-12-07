@@ -9,4 +9,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Time range must contain a '-' separator",
   },
+  INVALID_SEPARATOR: {
+    type: "invalid_format",
+    message: "Only '-' separator is allowed",
+  },
 } as const satisfies Record<string, validationError>;

@@ -13,6 +13,8 @@ export type ValidationResult = {
 };
 
 export class MilitaryTimeValidator {
+  private static readonly INVALID_SEPARATORS = /[\/|~—]|\bto\b/;
+
   public static isValidRange(timeRange: string): ValidationResult {
     const errors: ValidationResult["errors"] = [];
 
@@ -22,6 +24,10 @@ export class MilitaryTimeValidator {
 
     if (!(timeRange.split("-").length - 1)) {
       errors.push(TIME_RANGE_ERRORS.MISSING_SEPARATOR);
+    }
+
+    if (this.INVALID_SEPARATORS.test(timeRange)) {
+      errors.push(TIME_RANGE_ERRORS.INVALID_SEPARATOR);
     }
 
     return {
