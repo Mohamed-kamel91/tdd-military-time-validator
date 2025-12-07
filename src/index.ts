@@ -36,6 +36,13 @@ export class MilitaryTimeValidator {
       errors.push(TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR);
     }
 
+    const times = timeRange.split("-");
+    const timescount = times.filter((time) => time.trim() !== "").length;
+
+    if (timescount === 0) {
+      errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
+    }
+
     return {
       isValid: errors.length === 0,
       errors,

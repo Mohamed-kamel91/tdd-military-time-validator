@@ -17,4 +17,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Multiple '-' separator is not allowed",
   },
+  MISSING_TIMES: {
+    type: "invalid_format",
+    message: "Time range must contain start and end times",
+  },
 } as const satisfies Record<string, validationError>;

@@ -61,7 +61,7 @@ This project validates military time by:
 - `"17:23"` → invalid_format, missing '-' separator."
 - `"01:12 14:32"` → invalid_format, missing '-' separator."
 
-#### Only one single '-' seperator is allowed
+#### Only one single '-' seperator is allowed (DONE)
 
 **Valid:**
 
@@ -72,7 +72,7 @@ This project validates military time by:
 - `"01:12 -- 14:32"` → invalid_format, multiple '-' separator is not allowed."
 - `"12:23 - 17:23 - 23:11"` → invalid_format, multiple '-' separator is not allowed."
 
-#### Only '-' seperator is allowed
+#### Only '-' seperator is allowed (DONE)
 
 **Valid:**
 
@@ -92,12 +92,23 @@ This project validates military time by:
 
 - `"01:12 - 14:32"`
 
-**Invalid:**
+**Invalid (both times missing):**
 
+- `" "` → invalid_format, time range must contain exactly two time values.
 - `" - "` → invalid_format, time range must contain exactly two time values."
+
+**Invalid (Start time missing):**
+
 - `" - 17:23"` → invalid_format, start time is missing."
+
+**Invalid (End time missing):**
+
+- `"12:23"` → invalid_format, end time is missing."
 - `"17:23 - "` → invalid_format, end time is missing."
-- `12:23 - 17:23 - 23:11"` → invalid_format,time range must contain exactly two time values."
+
+**Invalid (Multiple times):**
+
+- `"12:23 - 17:23 - 23:11"` → invalid_format,time range must contain exactly two time values."
 
 #### Each time must contain exactly one ':' separator
 

@@ -70,6 +70,19 @@ describe("Military time validator", () => {
           }
         );
       });
+
+      describe("Time range must contain two times (start/end)", () => {
+        it.each(["", " ", " - "])(
+          "returns error for time range '%s' with missing start and end times",
+          (timeRange) => {
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              TIME_RANGE_ERRORS.MISSING_TIMES
+            );
+          }
+        );
+      });
     });
   });
 });
