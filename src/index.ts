@@ -37,10 +37,14 @@ export class MilitaryTimeValidator {
     }
 
     const times = timeRange.split("-");
-    const timescount = times.filter((time) => time.trim() !== "").length;
+    const timesCount = times.filter((time) => time.trim() !== "").length;
 
-    if (timescount === 0) {
+    if (timesCount === 0) {
       errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
+    }
+
+    if (timesCount > 2) { 
+      errors.push(TIME_RANGE_ERRORS.TOO_MANY_TIMES)
     }
 
     return {

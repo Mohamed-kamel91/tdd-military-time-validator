@@ -82,6 +82,17 @@ describe("Military time validator", () => {
             );
           }
         );
+
+        it("returns error for time range '12:23 - 17:23 - 23:11' with too many times", () => {
+          const timeRange = "12:23 - 17:23 - 23:11";
+
+          const result = MilitaryTimeValidator.isValidRange(timeRange);
+
+          expect(result.isValid).toBe(false);
+          expect(result.errors).toContainEqual(
+            TIME_RANGE_ERRORS.TOO_MANY_TIMES
+          );
+        });
       });
     });
   });

@@ -21,4 +21,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Time range must contain start and end times",
   },
+  TOO_MANY_TIMES: {
+    type: "invalid_format",
+    message: "Time range must contain exactly two times",
+  },
 } as const satisfies Record<string, validationError>;
