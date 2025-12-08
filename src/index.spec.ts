@@ -93,6 +93,17 @@ describe("Military time validator", () => {
             TIME_RANGE_ERRORS.TOO_MANY_TIMES
           );
         });
+
+        it.each(["-17:23", "- 17:23", " - 17:23"])(
+          "returns error for time range '%s' with missing start time",
+          (timeRange) => {
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              TIME_RANGE_ERRORS.MISSING_START_TIME
+            );
+          }
+        );
       });
     });
   });

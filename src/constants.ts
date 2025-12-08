@@ -25,4 +25,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Time range must contain exactly two times",
   },
+  MISSING_START_TIME: {
+    type: "invalid_format",
+    message: "Start time is missing",
+  },
 } as const satisfies Record<string, validationError>;

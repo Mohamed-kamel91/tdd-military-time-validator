@@ -97,6 +97,10 @@ This project validates military time by:
 - `" "` → invalid_format, time range must contain exactly two time values.
 - `" - "` → invalid_format, time range must contain exactly two time values."
 
+**Invalid (Multiple times):**
+
+- `"12:23 - 17:23 - 23:11"` → invalid_format,time range must contain exactly two time values."
+
 **Invalid (Start time missing):**
 
 - `" - 17:23"` → invalid_format, start time is missing."
@@ -106,9 +110,6 @@ This project validates military time by:
 - `"12:23"` → invalid_format, end time is missing."
 - `"17:23 - "` → invalid_format, end time is missing."
 
-**Invalid (Multiple times):**
-
-- `"12:23 - 17:23 - 23:11"` → invalid_format,time range must contain exactly two time values."
 
 #### Each time must contain exactly one ':' separator
 

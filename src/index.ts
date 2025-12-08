@@ -38,13 +38,20 @@ export class MilitaryTimeValidator {
 
     const times = timeRange.split("-");
     const timesCount = times.filter((time) => time.trim() !== "").length;
+    const [start, end] = times;
 
     if (timesCount === 0) {
       errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
     }
 
-    if (timesCount > 2) { 
-      errors.push(TIME_RANGE_ERRORS.TOO_MANY_TIMES)
+    if (timesCount === 1) {
+      if (start.trim() === "") {
+        errors.push(TIME_RANGE_ERRORS.MISSING_START_TIME);
+      }
+    }
+
+    if (timesCount > 2) {
+      errors.push(TIME_RANGE_ERRORS.TOO_MANY_TIMES);
     }
 
     return {
