@@ -29,4 +29,8 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Start time is missing",
   },
+  MISSING_END_TIME: {
+    type: "invalid_format",
+    message: "End time is missing",
+  },
 } as const satisfies Record<string, validationError>;

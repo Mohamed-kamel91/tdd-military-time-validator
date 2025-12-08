@@ -48,6 +48,10 @@ export class MilitaryTimeValidator {
       if (start.trim() === "") {
         errors.push(TIME_RANGE_ERRORS.MISSING_START_TIME);
       }
+
+      if (!end || end.trim() === "") {
+        errors.push(TIME_RANGE_ERRORS.MISSING_END_TIME);
+      }
     }
 
     if (timesCount > 2) {

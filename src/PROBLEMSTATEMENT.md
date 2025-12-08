@@ -104,11 +104,15 @@ This project validates military time by:
 **Invalid (Start time missing):**
 
 - `" - 17:23"` → invalid_format, start time is missing."
+- `"-17:23"` → invalid_format, start time is missing."
+- `"- 17:23"` → invalid_format, start time is missing."
+- `"- 17:23 -"` → invalid_format, start time is missing."
 
 **Invalid (End time missing):**
 
 - `"12:23"` → invalid_format, end time is missing."
 - `"17:23 - "` → invalid_format, end time is missing."
+- `"12:21 --"` → invalid_format, end time is missing."
 
 
 #### Each time must contain exactly one ':' separator

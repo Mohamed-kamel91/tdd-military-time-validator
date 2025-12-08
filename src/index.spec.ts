@@ -104,6 +104,17 @@ describe("Military time validator", () => {
             );
           }
         );
+
+        it.each(["12:23", "17:23 - ", "17:23-", "12:21 --"])(
+          "returns error for time range '%s' with missing end time",
+          (timeRange) => {
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              TIME_RANGE_ERRORS.MISSING_END_TIME
+            );
+          }
+        );
       });
     });
   });
