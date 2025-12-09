@@ -29,4 +29,12 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "End time is missing",
   },
+  INVALID_START_TIME_FORMAT: {
+    type: "invalid_format",
+    message: "Start time must be in HH:MM format",
+  },
+  INVALID_END_TIME_FORMAT: {
+    type: "invalid_format",
+    message: "End time must be in HH:MM format",
+  },
 } as const satisfies Record<string, validationError>;

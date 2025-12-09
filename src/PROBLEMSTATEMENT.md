@@ -127,6 +127,7 @@ This project validates military time by:
 - `"0112 - 14:32"` → invalid_format, ':' is required in start time."
 - `"01 12 - 14:32"` → invalid_format, ':' is required in start time."
 - `"01:12 - 1432"` → invalid_format, ':' is required in end time."
+- `"01:12 - 14 32"` → invalid_format, ':' is required in end time."
 
 **Invalid (too many ':'):**
 

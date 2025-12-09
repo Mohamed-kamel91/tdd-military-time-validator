@@ -47,6 +47,21 @@ export class MilitaryTimeValidator {
       }
     }
 
+    if (errors.length === 0) {
+      const [startTime, endTime] = timeRange.split("-");
+      const isValidTimeFormat = (time: string) => /^\d{2}:\d{2}$/.test(time);
+      const { INVALID_START_TIME_FORMAT, INVALID_END_TIME_FORMAT } =
+        TIME_RANGE_ERRORS;
+        
+      if (!isValidTimeFormat(startTime.trim())) {
+        errors.push(INVALID_START_TIME_FORMAT);
+      }
+
+      if (!isValidTimeFormat(endTime.trim())) {
+        errors.push(INVALID_END_TIME_FORMAT);
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors,

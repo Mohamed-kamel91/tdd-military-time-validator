@@ -113,6 +113,29 @@ describe("Military time validator", () => {
           }
         );
       });
+
+      describe("Start/End times must be in 'HH:MM' format", () => {
+        it.each([
+          ["0112 - 14:32", "start"],
+          ["01 12 - 14:32", "start"],
+          ["01:12 - 1432", "end"],
+          ["01:12 - 14 32", "end"],
+        ])(
+          "returns format error for '%s' when '%p' time with missing ':'",
+          (timeRange, timePosition) => {
+            const { INVALID_START_TIME_FORMAT, INVALID_END_TIME_FORMAT } =
+              TIME_RANGE_ERRORS;
+
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContainEqual(
+              timePosition === "start"
+                ? INVALID_START_TIME_FORMAT
+                : INVALID_END_TIME_FORMAT
+            );
+          }
+        );
+      });
     });
   });
 });
