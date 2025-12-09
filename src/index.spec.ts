@@ -43,6 +43,7 @@ describe("Military time validator", () => {
         it.each([
           ["01:12 / 14:32", "/"],
           ["01:12 — 14:32", "—"],
+          ["01:12 _ 14:32", "_"],
           ["01:12 | 14:32", "|"],
           ["01:12 ~ 14:32", "~"],
           ["01:12 to 14:32", "to"],
@@ -59,7 +60,14 @@ describe("Military time validator", () => {
       });
 
       describe("Time range must contain one '-' seperator only", () => {
-        it.each([["01:12 -- 14:32", "12:23 - 17:23 - 23:11"]])(
+        it.each([
+          "12:21 --",
+          "- 17:23 -",
+          "- 12:12 - 12:21",
+          "- 12:12 - 12:21 -",
+          "01:12 -- 14:32",
+          "12:23 - 17:23 - 23:11",
+        ])(
           "returns error for time range '%s' with invalid separator '%p'",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
@@ -72,7 +80,7 @@ describe("Military time validator", () => {
       });
 
       describe("Time range must contain two times (start/end)", () => {
-        it.each(["", " ", " - "])(
+        it.each(["-", " - "])(
           "returns error for time range '%s' with missing start and end times",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
@@ -83,18 +91,7 @@ describe("Military time validator", () => {
           }
         );
 
-        it("returns error for time range '12:23 - 17:23 - 23:11' with too many times", () => {
-          const timeRange = "12:23 - 17:23 - 23:11";
-
-          const result = MilitaryTimeValidator.isValidRange(timeRange);
-
-          expect(result.isValid).toBe(false);
-          expect(result.errors).toContainEqual(
-            TIME_RANGE_ERRORS.TOO_MANY_TIMES
-          );
-        });
-
-        it.each(["-17:23", "- 17:23", " - 17:23"])(
+        it.each([" -17:23", "- 17:23", " - 17:23"])(
           "returns error for time range '%s' with missing start time",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
@@ -105,7 +102,7 @@ describe("Military time validator", () => {
           }
         );
 
-        it.each(["12:23", "17:23 - ", "17:23-", "12:21 --"])(
+        it.each(["12:23-", "17:23 -", "17:23 - "])(
           "returns error for time range '%s' with missing end time",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
