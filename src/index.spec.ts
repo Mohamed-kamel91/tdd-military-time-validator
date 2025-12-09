@@ -1,5 +1,5 @@
-import { MilitaryTimeValidator } from ".";
-import { TIME_RANGE_ERRORS } from "./constants";
+import { MilitaryTimeValidator, validationError } from ".";
+import { TIME_RANGE_ERRORS, TimeRangeErrorKey } from "./constants";
 
 describe("Military time validator", () => {
   describe("Time Range Format validation ('HH:MM - HH:MM')", () => {
@@ -116,23 +116,25 @@ describe("Military time validator", () => {
 
       describe("Start/End times must be in 'HH:MM' format", () => {
         it.each([
-          ["0112 - 14:32", "start"],
-          ["01 12 - 14:32", "start"],
-          ["01:12 - 1432", "end"],
-          ["01:12 - 14 32", "end"],
+          ["0112 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+          ["01 12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+          ["01:12 - 1432", "end", ["INVALID_END_TIME_FORMAT"]],
+          ["01:12 - 14 32", "end", ["INVALID_END_TIME_FORMAT"]],
+          [
+            "0112 - 14 32",
+            "start & end",
+            ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+          ],
         ])(
-          "returns format error for '%s' when '%p' time with missing ':'",
-          (timeRange, timePosition) => {
-            const { INVALID_START_TIME_FORMAT, INVALID_END_TIME_FORMAT } =
-              TIME_RANGE_ERRORS;
-
+          "returns format error for '%s' when %s time missing ':' seperator",
+          (timeRange, _, errors) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
-            expect(result.errors).toContainEqual(
-              timePosition === "start"
-                ? INVALID_START_TIME_FORMAT
-                : INVALID_END_TIME_FORMAT
-            );
+            errors.forEach((error) => {
+              expect(result.errors).toContainEqual(
+                TIME_RANGE_ERRORS[error as TimeRangeErrorKey]
+              );
+            });
           }
         );
       });

@@ -1,5 +1,7 @@
 import { validationError } from ".";
 
+export type TimeRangeErrorKey = keyof typeof TIME_RANGE_ERRORS;
+
 export const TIME_RANGE_ERRORS = {
   EMPTY: {
     type: "invalid_format",
