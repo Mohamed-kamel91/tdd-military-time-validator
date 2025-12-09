@@ -21,10 +21,6 @@ export const TIME_RANGE_ERRORS = {
     type: "invalid_format",
     message: "Time range must contain start and end times",
   },
-  TOO_MANY_TIMES: {
-    type: "invalid_format",
-    message: "Time range must contain exactly two times",
-  },
   MISSING_START_TIME: {
     type: "invalid_format",
     message: "Start time is missing",
