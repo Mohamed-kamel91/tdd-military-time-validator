@@ -13,8 +13,6 @@ export type ValidationResult = {
 };
 
 export class MilitaryTimeValidator {
-  private static readonly INVALID_SEPARATORS = /[\/|~—]|\bto\b/;
-
   public static isValidRange(timeRange: string): ValidationResult {
     const errors: ValidationResult["errors"] = [];
 
@@ -22,40 +20,31 @@ export class MilitaryTimeValidator {
       errors.push(TIME_RANGE_ERRORS.EMPTY);
     }
 
-    if (!(timeRange.split("-").length - 1)) {
-      errors.push(TIME_RANGE_ERRORS.MISSING_SEPARATOR);
-    }
-
-    if (this.INVALID_SEPARATORS.test(timeRange)) {
-      errors.push(TIME_RANGE_ERRORS.INVALID_SEPARATOR);
-    }
-
     const dashCount = (timeRange.match(/-/g) || []).length;
+    const hasInvalidSeperator = /[\/|~—_]|\bto\b/.test(timeRange);
 
-    if (dashCount > 1) {
+    if (dashCount === 0) {
+      errors.push(TIME_RANGE_ERRORS.MISSING_SEPARATOR);
+    } else if (dashCount > 1) {
       errors.push(TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR);
     }
 
-    const times = timeRange.split("-");
-    const timesCount = times.filter((time) => time.trim() !== "").length;
-    const [start, end] = times;
-
-    if (timesCount === 0) {
-      errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
+    if (hasInvalidSeperator) {
+      errors.push(TIME_RANGE_ERRORS.INVALID_SEPARATOR);
     }
 
-    if (timesCount === 1) {
-      if (start.trim() === "") {
-        errors.push(TIME_RANGE_ERRORS.MISSING_START_TIME);
-      }
+    if (errors.length === 0) {
+      const [startTime, endTime] = timeRange.split("-");
+      const hasStartTime = !!startTime?.trim();
+      const hasEndTime = !!endTime?.trim();
 
-      if (!end || end.trim() === "") {
+      if (!hasStartTime && !hasEndTime) {
+        errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
+      } else if (!hasStartTime) {
+        errors.push(TIME_RANGE_ERRORS.MISSING_START_TIME);
+      } else if (!hasEndTime) {
         errors.push(TIME_RANGE_ERRORS.MISSING_END_TIME);
       }
-    }
-
-    if (timesCount > 2) {
-      errors.push(TIME_RANGE_ERRORS.TOO_MANY_TIMES);
     }
 
     return {
