@@ -52,4 +52,12 @@ export const TIME_VALUE_ERRORS = {
     type: "invalid_time",
     message: "End time hour must be between 00 and 23",
   },
+  INVALID_START_MINUTE_RANGE: {
+    type: "invalid_time",
+    message: "Start time minutes must be between 00 and 59",
+  },
+  INVALID_END_MINUTE_RANGE: {
+    type: "invalid_time",
+    message: "End time minutes must be between 00 and 59",
+  },
 } as const;

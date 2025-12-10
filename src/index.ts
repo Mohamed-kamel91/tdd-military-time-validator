@@ -60,8 +60,8 @@ export class MilitaryTimeValidator {
     }
 
     if (errors.length === 0) {
-      const [startHour] = startTime.split(":");
-      const [endHour] = endTime.split(":");
+      const [startHour, startMin] = startTime.split(":");
+      const [endHour, endMin] = endTime.split(":");
 
       if (Number(startHour) < 0 || Number(startHour) > 23) {
         errors.push(TIME_VALUE_ERRORS.INVALID_START_HOUR_RANGE);
@@ -69,6 +69,14 @@ export class MilitaryTimeValidator {
 
       if (Number(endHour) < 0 || Number(endHour) > 23) {
         errors.push(TIME_VALUE_ERRORS.INVALID_END_HOUR_RANGE);
+      } 
+
+      if (Number(startMin) < 0 || Number(startMin) > 59) {
+        errors.push(TIME_VALUE_ERRORS.INVALID_START_MINUTE_RANGE);
+      } 
+
+      if (Number(endMin) < 0 || Number(endMin) > 59) {
+        errors.push(TIME_VALUE_ERRORS.INVALID_END_MINUTE_RANGE);
       } 
     }
 

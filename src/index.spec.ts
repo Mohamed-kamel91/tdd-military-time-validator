@@ -301,7 +301,7 @@ describe("Military time validator", () => {
   });
 
   describe("Time Range Hours/Minutes bounds validation ('00:00 - 23:59')", () => {
-    const getTimeValueErrors = (errors: string[]) => 
+    const getTimeValueErrors = (errors: string[]) =>
       errors.map((key) => TIME_VALUE_ERRORS[key as TimeValueErrorKey]);
 
     describe("Hours must be between 00-23", () => {
@@ -317,8 +317,34 @@ describe("Military time validator", () => {
         "reject time range '%s' with hour out of range in %s time",
         (timeRange, _, errors) => {
           const result = MilitaryTimeValidator.isValidRange(timeRange);
-          console.log(getTimeValueErrors(errors));
+          expect(result.isValid).toBe(false);
+          expect(result.errors).toEqual(getTimeValueErrors(errors));
+        }
+      );
+    });
 
+    describe("Minutes must be between 00-23", () => {
+      it.each([
+        ["12:60 - 13:00", "start", ["INVALID_START_MINUTE_RANGE"]],
+        ["12:99 - 13:00", "start", ["INVALID_START_MINUTE_RANGE"]],
+
+        ["12:00 - 13:60", "end", ["INVALID_END_MINUTE_RANGE"]],
+        ["12:00 - 13:99", "end", ["INVALID_END_MINUTE_RANGE"]],
+
+        [
+          "12:60 - 13:60",
+          "both",
+          ["INVALID_START_MINUTE_RANGE", "INVALID_END_MINUTE_RANGE"],
+        ],
+        [
+          "12:99 - 13:88",
+          "both",
+          ["INVALID_START_MINUTE_RANGE", "INVALID_END_MINUTE_RANGE"],
+        ],
+      ])(
+        "reject time range '%s' with hour out of range in %s time",
+        (timeRange, _, errors) => {
+          const result = MilitaryTimeValidator.isValidRange(timeRange);
           expect(result.isValid).toBe(false);
           expect(result.errors).toEqual(getTimeValueErrors(errors));
         }

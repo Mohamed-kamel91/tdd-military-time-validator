@@ -240,7 +240,7 @@ This project validates military time by:
 
 **Valid:**
 
-- `"25:00 - 12:23"`
+- `"23:00 - 12:23"`
 - `"12:45 - 10:00"`
 - `"00:00 - 23:59" (edge case)`
 - `"23:59 - 00:00" (edge case)`
