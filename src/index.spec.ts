@@ -160,6 +160,30 @@ describe("Military time validator", () => {
             expect(result.errors).toEqual(expectedErrors);
           }
         );
+
+        it.each([
+          ["01—12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+          ["01.12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+          ["01:12 - 14/32", "end", ["INVALID_END_TIME_FORMAT"]],
+          ["01:12 - 14_32", "end", ["INVALID_END_TIME_FORMAT"]],
+          [
+            "01;12 - 14|32",
+            "end",
+            ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+          ],
+        ])(
+          "returns format error for time range '%s' when %s time with invalid time seperator",
+          (timeRange, _, errorKeys) => {
+            const expectedErrors = errorKeys.map(
+              (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
+            );
+
+            const result = MilitaryTimeValidator.isValidRange(timeRange);
+
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toEqual(expectedErrors);
+          }
+        );
       });
     });
   });
