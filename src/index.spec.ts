@@ -127,14 +127,15 @@ describe("Military time validator", () => {
           ],
         ])(
           "returns format error for '%s' when %s time missing ':' seperator",
-          (timeRange, _, errors) => {
+          (timeRange, _, errorKeys) => {
+            const expectedErrors = errorKeys.map(
+              (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
+            );
+
             const result = MilitaryTimeValidator.isValidRange(timeRange);
+
             expect(result.isValid).toBe(false);
-            errors.forEach((error) => {
-              expect(result.errors).toContainEqual(
-                TIME_RANGE_ERRORS[error as TimeRangeErrorKey]
-              );
-            });
+            expect(result.errors).toEqual(expectedErrors);
           }
         );
       });
