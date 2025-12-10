@@ -1,5 +1,10 @@
-import { MilitaryTimeValidator, validationError } from ".";
-import { TIME_RANGE_ERRORS, TimeRangeErrorKey } from "./constants";
+import { MilitaryTimeValidator } from ".";
+import {
+  TIME_RANGE_ERRORS,
+  TIME_VALUE_ERRORS,
+  TimeRangeErrorKey,
+  TimeValueErrorKey,
+} from "./constants";
 
 describe("Military time validator", () => {
   describe("Time Range Format validation ('HH:MM - HH:MM')", () => {
@@ -292,6 +297,32 @@ describe("Military time validator", () => {
           );
         });
       });
+    });
+  });
+
+  describe("Time Range Hours/Minutes bounds validation ('00:00 - 23:59')", () => {
+    const getTimeValueErrors = (errors: string[]) => 
+      errors.map((key) => TIME_VALUE_ERRORS[key as TimeValueErrorKey]);
+
+    describe("Hours must be between 00-23", () => {
+      it.each([
+        ["25:00 - 12:23", "start", ["INVALID_START_HOUR_RANGE"]],
+        ["18:17 - 24:00", "end", ["INVALID_END_HOUR_RANGE"]],
+        [
+          "99:12 - 26:00",
+          "both",
+          ["INVALID_START_HOUR_RANGE", "INVALID_END_HOUR_RANGE"],
+        ],
+      ])(
+        "reject time range '%s' with hour out of range in %s time",
+        (timeRange, _, errors) => {
+          const result = MilitaryTimeValidator.isValidRange(timeRange);
+          console.log(getTimeValueErrors(errors));
+
+          expect(result.isValid).toBe(false);
+          expect(result.errors).toEqual(getTimeValueErrors(errors));
+        }
+      );
     });
   });
 });

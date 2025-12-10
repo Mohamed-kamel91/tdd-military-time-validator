@@ -1,8 +1,10 @@
 import { validationError } from ".";
 
 export type TimeRangeErrorKey = keyof typeof TIME_RANGE_ERRORS;
+export type TimeValueErrorKey = keyof typeof TIME_VALUE_ERRORS;
 
 export const TIME_RANGE_ERRORS = {
+  // 'invalid_format' errors
   EMPTY: {
     type: "invalid_format",
     message: "Time range cannot be empty",
@@ -40,3 +42,14 @@ export const TIME_RANGE_ERRORS = {
     message: "End time must be in HH:MM format",
   },
 } as const satisfies Record<string, validationError>;
+
+export const TIME_VALUE_ERRORS = {
+  INVALID_START_HOUR_RANGE: {
+    type: "invalid_time",
+    message: "Start time hour must be between 00 and 23",
+  },
+  INVALID_END_HOUR_RANGE: {
+    type: "invalid_time",
+    message: "End time hour must be between 00 and 23",
+  },
+} as const;

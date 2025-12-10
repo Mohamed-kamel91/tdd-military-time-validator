@@ -27,7 +27,7 @@ This project validates military time by:
 
 ## 1. Validate Time Range Format ("HH:MM - HH:MM")
 
-### Valid formats: (DONE)
+### Valid formats:
 
 - `"01:12 - 14:32"`
 - `"01:12 -14:32"`
@@ -35,7 +35,7 @@ This project validates military time by:
 - `"00:00-23:59"`
 - `" 22:22 - 02:43 "`
 
-#### Time range must not be empty (DONE)
+#### Time range must not be empty 
 
 **Valid:**
 
@@ -47,7 +47,7 @@ This project validates military time by:
 - `""` → invalid_format, time range cannot be empty.
 - `" "` → invalid_format, time range cannot be empty.
 
-#### Time range must contain '-' separator (DONE)
+#### Time range must contain '-' separator
 
 **Valid:**
 
@@ -61,7 +61,7 @@ This project validates military time by:
 - `"17:23"` → invalid_format, missing '-' separator."
 - `"01:12 14:32"` → invalid_format, missing '-' separator."
 
-#### Only one single '-' seperator is allowed (DONE)
+#### Only one single '-' seperator is allowed
 
 **Valid:**
 
@@ -76,7 +76,7 @@ This project validates military time by:
 - `"01:12 -- 14:32"` → invalid_format, multiple '-' separator is not allowed."
 - `"12:23 - 17:23 - 23:11"` → invalid_format, multiple '-' separator is not allowed."
 
-#### Only '-' seperator is allowed (DONE)
+#### Only '-' seperator is allowed
 
 **Valid:**
 
@@ -91,7 +91,7 @@ This project validates military time by:
 - `"01:12 ~ 14:32"` → invalid_format, only '-' is allowed."
 - `"01:12 to 14:32"` → invalid_format, only '-' is allowed."
 
-#### Time range must contain exactly two times (start/end) (DONE)
+#### Time range must contain exactly two times (start/end)
 
 **Valid:**
 
@@ -218,7 +218,6 @@ This project validates military time by:
 - `"01:12 - 14:32abc"` → invalid_format, trailing characters are not allowed."
 - `"10:12test - 14:32foo"` → invalid_format, trailing characters are not allowed."
  
- 
 ---
 
 ## 2. Validate hour / minutes in a single time ("00:00 - 23:59")
@@ -233,9 +232,9 @@ This project validates military time by:
 
 **Invalid:**
 
-- `"18:17 - 24:00"` → "invalid_time", hour '24' is out of range (must be 00–23).
 - `"25:00 - 12:23"` → "invalid_time", hour '25' is out of range (must be 00–23).
-- `"99:12 - 10:00"` → "invalid_time", hour '99' is out of range (must be 00–23).
+- `"18:17 - 24:00"` → "invalid_time", hour '24' is out of range (must be 00–23).
+- `"99:12 - 26:00"` → "invalid_time", hour '99' is out of range (must be 00–23).
 
 #### Minutes must be between 00–59
 
