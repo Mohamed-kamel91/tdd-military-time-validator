@@ -178,17 +178,6 @@ This project validates military time by:
 - `"10:12 - 14:123"` → invalid_format, minutes must be two digits in end time."
 - `""10:1 - 14:1""` → invalid_format, minutes must be two digits in both times."
 
-#### Time value must not include trailing characters
-
-**Valid:**
-
-- `"01:12 - 14:32"`
-
-**Invalid:**
-
-- `"01:12 - 14:32 PM"` → invalid_format, AM/PM is not allowed in military time."
-- `"01:12 - 14:32abc"` → invalid_format, trailing characters are not allowed."
-
 #### Hour part must exist
 
 **Valid:**
@@ -199,6 +188,7 @@ This project validates military time by:
 
 - `":12 - 14:32"` → invalid_format, missing hour in start time."
 - `"01:12 - :32"` → invalid_format, missing hour in end time."
+- `":12 - :32"` → invalid_format, missing hour in both times."
 
 #### Minutes part must exist
 
@@ -209,9 +199,22 @@ This project validates military time by:
 **Invalid:**
 
 - `"01 - 14:32"` → invalid_format, missing minutes in start time."
+- `"01: - 14:32"` → invalid_format, missing minutes in start time."
 - `"01:12 - 14"` → invalid_format, missing minutes in end time."
-- `"01: - 14:32"` → invalid_format, minutes must exist."
-- `"01:12 - 14:"` → invalid_format, minutes must exist."
+- `"01:12 - 14:"` → invalid_format, Missing minutes in end time"
+- `01 - 14"` → invalid_format, Missing minutes in both times"
+- `"01: - 14:"` → invalid_format, Missing minutes in both times"
+
+#### Time value must not include trailing characters
+
+**Valid:**
+
+- `"01:12 - 14:32"`
+
+**Invalid:**
+
+- `"01:12 - 14:32 PM"` → invalid_format, AM/PM is not allowed in military time."
+- `"01:12 - 14:32abc"` → invalid_format, trailing characters are not allowed."
 
 ---
 

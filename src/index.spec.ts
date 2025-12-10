@@ -218,6 +218,47 @@ describe("Military time validator", () => {
             }
           );
         });
+
+        describe("Missing Hour part in time", () => {
+          it.each([
+            [":12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["10:12 - :32", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              ":12 - :32",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with missing hour in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
+
+        describe("Missing minutes part in time", () => {
+          it.each([
+            ["01 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01: - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01:12 - 14", "end", ["INVALID_END_TIME_FORMAT"]],
+            ["01:12 - 14:", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "01 - 14",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+            [
+              "01: - 14:",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with missing minutes in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
       });
     });
   });
