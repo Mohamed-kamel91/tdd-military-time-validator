@@ -213,9 +213,12 @@ This project validates military time by:
 
 **Invalid:**
 
-- `"01:12 - 14:32 PM"` → invalid_format, AM/PM is not allowed in military time."
+- `"01:12 PM - 14:32"` → invalid_format, AM/PM is not allowed in military time."
+- `"10:12 AM - 14:32 PM"` → invalid_format, AM/PM is not allowed in military time."
 - `"01:12 - 14:32abc"` → invalid_format, trailing characters are not allowed."
-
+- `"10:12test - 14:32foo"` → invalid_format, trailing characters are not allowed."
+ 
+ 
 ---
 
 ## 2. Validate hour / minutes in a single time ("00:00 - 23:59")

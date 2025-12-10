@@ -259,6 +259,38 @@ describe("Military time validator", () => {
             }
           );
         });
+
+        describe("Time must not include trailing characters", () => {
+          it.each([
+            ["10:12 PM - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["10:12 - 14:32 PM", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "10:12 AM - 14:32 PM",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time '%s' with AM/PM in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+
+          it.each([
+            ["10:12abc - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["10:12 - 14:32xyz", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "10:12test - 14:32foo",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with trailing characters in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
       });
     });
   });
