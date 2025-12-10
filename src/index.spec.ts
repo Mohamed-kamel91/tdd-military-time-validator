@@ -48,7 +48,7 @@ describe("Military time validator", () => {
           ["01:12 ~ 14:32", "~"],
           ["01:12 to 14:32", "to"],
         ])(
-          "rejects time range '%s' with invalid separator '%p'",
+          "rejects time range '%s' with invalid separator '%s'",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
