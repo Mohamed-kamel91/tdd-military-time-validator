@@ -16,12 +16,14 @@ export class MilitaryTimeValidator {
   public static isValidRange(timeRange: string): ValidationResult {
     const errors: ValidationResult["errors"] = [];
 
-    if (!timeRange.trim()) {
+    const trimmed = timeRange.trim();
+
+    if (!trimmed) {
       errors.push(TIME_RANGE_ERRORS.EMPTY);
     }
 
-    const dashCount = (timeRange.match(/-/g) || []).length;
-    const hasInvalidSeperator = /[\/|~—_]|\bto\b/.test(timeRange);
+    const dashCount = (trimmed.match(/-/g) || []).length;
+    const hasInvalidSeperator = /[\/|~—_]|\bto\b/.test(trimmed);
 
     if (dashCount === 0) {
       errors.push(TIME_RANGE_ERRORS.MISSING_SEPARATOR);
@@ -29,37 +31,32 @@ export class MilitaryTimeValidator {
       errors.push(TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR);
     }
 
-    if (hasInvalidSeperator) {
+    if (hasInvalidSeperator && dashCount === 0) {
       errors.push(TIME_RANGE_ERRORS.INVALID_SEPARATOR);
     }
 
-    if (errors.length === 0) {
-      const [startTime, endTime] = timeRange.split("-");
-      const hasStartTime = !!startTime?.trim();
-      const hasEndTime = !!endTime?.trim();
+    const segments = trimmed.split("-");
+    const startTime = segments[0]?.trim();
+    const endTime = segments[1]?.trim();
 
-      if (!hasStartTime && !hasEndTime) {
+    if (dashCount === 1) {
+      if (!startTime && !endTime) {
         errors.push(TIME_RANGE_ERRORS.MISSING_TIMES);
-      } else if (!hasStartTime) {
+      } else if (!startTime) {
         errors.push(TIME_RANGE_ERRORS.MISSING_START_TIME);
-      } else if (!hasEndTime) {
+      } else if (!endTime) {
         errors.push(TIME_RANGE_ERRORS.MISSING_END_TIME);
       }
     }
 
-    if (errors.length === 0) {
-      const [startTime, endTime] = timeRange.split("-");
-      const isValidTimeFormat = (time: string) => /^\d{2}:\d{2}$/.test(time);
-      const { INVALID_START_TIME_FORMAT, INVALID_END_TIME_FORMAT } =
-        TIME_RANGE_ERRORS;
-        
-      if (!isValidTimeFormat(startTime.trim())) {
-        errors.push(INVALID_START_TIME_FORMAT);
-      }
+    const isHHMM = (time: string) => /^\d{2}:\d{2}$/.test(time);
 
-      if (!isValidTimeFormat(endTime.trim())) {
-        errors.push(INVALID_END_TIME_FORMAT);
-      }
+    if (startTime && !isHHMM(startTime)) {
+      errors.push(TIME_RANGE_ERRORS.INVALID_START_TIME_FORMAT);
+    }
+
+    if (endTime && !isHHMM(endTime)) {
+      errors.push(TIME_RANGE_ERRORS.INVALID_END_TIME_FORMAT);
     }
 
     return {

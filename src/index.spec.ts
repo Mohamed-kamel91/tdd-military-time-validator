@@ -19,7 +19,7 @@ describe("Military time validator", () => {
 
     describe("Invalid time range formats", () => {
       describe("Time range must not be empty", () => {
-        it.each(["", "  "])("returns error for empty time range: '%s'", () => {
+        it.each(["", "  "])("rejects empty time range: '%s'", () => {
           const result = MilitaryTimeValidator.isValidRange("");
           expect(result.isValid).toBe(false);
           expect(result.errors).toContainEqual(TIME_RANGE_ERRORS.EMPTY);
@@ -28,7 +28,7 @@ describe("Military time validator", () => {
 
       describe("Time range must contain '-' seperator", () => {
         it.each(["01:12", "01:12 14:32"])(
-          "returns error for time range '%s' when '-' separator is missing",
+          "rejects time range '%s' when '-' separator is missing",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -48,7 +48,7 @@ describe("Military time validator", () => {
           ["01:12 ~ 14:32", "~"],
           ["01:12 to 14:32", "to"],
         ])(
-          "returns error for time range '%s' with invalid separator '%p'",
+          "rejects time range '%s' with invalid separator '%p'",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -68,7 +68,7 @@ describe("Military time validator", () => {
           "01:12 -- 14:32",
           "12:23 - 17:23 - 23:11",
         ])(
-          "returns error for time range '%s' with multiple '-' seperators",
+          "rejects time range '%s' with multiple '-' seperators",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -81,7 +81,7 @@ describe("Military time validator", () => {
 
       describe("Time range must contain two times (start/end)", () => {
         it.each(["-", " - "])(
-          "returns error for time range '%s' with missing start and end times",
+          "rejects time range '%s' with missing start and end times",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -92,7 +92,7 @@ describe("Military time validator", () => {
         );
 
         it.each([" -17:23", "- 17:23", " - 17:23"])(
-          "returns error for time range '%s' with missing start time",
+          "rejects time range '%s' with missing start time",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -103,7 +103,7 @@ describe("Military time validator", () => {
         );
 
         it.each(["12:23-", "17:23 -", "17:23 - "])(
-          "returns error for time range '%s' with missing end time",
+          "rejects time range '%s' with missing end time",
           (timeRange) => {
             const result = MilitaryTimeValidator.isValidRange(timeRange);
             expect(result.isValid).toBe(false);
@@ -115,75 +115,71 @@ describe("Military time validator", () => {
       });
 
       describe("Start/End times must be in 'HH:MM' format", () => {
-        it.each([
-          ["0112 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
-          ["01 12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
-          ["01:12 - 1432", "end", ["INVALID_END_TIME_FORMAT"]],
-          ["01:12 - 14 32", "end", ["INVALID_END_TIME_FORMAT"]],
-          [
-            "0112 - 14 32",
-            "start & end",
-            ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
-          ],
-        ])(
-          "returns format error for time range'%s' when %s time missing ':' seperator",
-          (timeRange, _, errorKeys) => {
-            const expectedErrors = errorKeys.map(
-              (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
-            );
+        const expectFormatErrors = (timeRange: string, errorKeys: string[]) => {
+          const expectedErrors = errorKeys.map(
+            (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
+          );
 
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+          const result = MilitaryTimeValidator.isValidRange(timeRange);
 
-            expect(result.isValid).toBe(false);
-            expect(result.errors).toEqual(expectedErrors);
-          }
-        );
+          expect(result.isValid).toBe(false);
+          expect(result.errors).toEqual(expectedErrors);
+        };
 
-        it.each([
-          ["01::12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
-          ["01:20 - 14:32:12", "start", ["INVALID_END_TIME_FORMAT"]],
-          [
-            "01::20 - 14:32:12",
-            "end",
-            ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
-          ],
-        ])(
-          "returns format error for time range '%s' when %s time with multiple ':' seperators",
-          (timeRange, _, errorKeys) => {
-            const expectedErrors = errorKeys.map(
-              (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
-            );
+        describe("Missing ':' separator", () => {
+          it.each([
+            ["0112 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01 12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01:12 - 1432", "end", ["INVALID_END_TIME_FORMAT"]],
+            ["01:12 - 14 32", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "0112 - 14 32",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with missing colon in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
 
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+        describe("Multiple ':' separators", () => {
+          it.each([
+            ["01::12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01:20 - 14:32:12", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "01::20 - 14:32:12",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with multiple colons in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
 
-            expect(result.isValid).toBe(false);
-            expect(result.errors).toEqual(expectedErrors);
-          }
-        );
-
-        it.each([
-          ["01—12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
-          ["01.12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
-          ["01:12 - 14/32", "end", ["INVALID_END_TIME_FORMAT"]],
-          ["01:12 - 14_32", "end", ["INVALID_END_TIME_FORMAT"]],
-          [
-            "01;12 - 14|32",
-            "end",
-            ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
-          ],
-        ])(
-          "returns format error for time range '%s' when %s time with invalid time seperator",
-          (timeRange, _, errorKeys) => {
-            const expectedErrors = errorKeys.map(
-              (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
-            );
-
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
-
-            expect(result.isValid).toBe(false);
-            expect(result.errors).toEqual(expectedErrors);
-          }
-        );
+        describe("Invalid time separator", () => {
+          it.each([
+            ["01—12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01.12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01:12 - 14/32", "end", ["INVALID_END_TIME_FORMAT"]],
+            ["01:12 - 14_32", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "01;12 - 14|32",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with wrong separator in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
       });
     });
   });

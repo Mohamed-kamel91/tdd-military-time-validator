@@ -128,12 +128,13 @@ This project validates military time by:
 - `"01 12 - 14:32"` → invalid_format, ':' is required in start time."
 - `"01:12 - 1432"` → invalid_format, ':' is required in end time."
 - `"01:12 - 14 32"` → invalid_format, ':' is required in end time."
+- `"0112 - 14 32"` → invalid_format, ':' is required in both start and  times."
 
 **Invalid (too many ':'):**
 
 - `"01::12 - 14:32"` → invalid_format, too many ':' in start time."
-- `"0:1:12 - 14:32"` → invalid_format, invalid HH:MM format."
-- `"01:1:2 - 14:32"` → invalid_format, invalid HH:MM format."
+- `"01:20 - 14:32:12"` → invalid_format, multiple':' in end time."
+- `"01::20 - 14:32:12"` → invalid_format, multiple':' in both start and end times."
 
 #### Only ':' is allowed as the time separator
 
@@ -143,11 +144,11 @@ This project validates military time by:
 
 **Invalid:**
 
-- `"01-12 - 14:32"` → invalid_format, only ':' is allowed in time values."
-- `"01/12 - 14:32"` → invalid_format, only ':' is allowed."
+- `"01—12 - 14:32"` → invalid_format, only ':' is allowed in time values."
 - `"01.12 - 14:32"` → invalid_format, only ':' is allowed."
-- `"01_12 - 14:32"` → invalid_format, only ':' is allowed."
-- `"01;12 - 14:32"` → invalid_format, only ':' is allowed."
+- `"01:12 - 14/32"` → invalid_format, only ':' is allowed."
+- `"01:12 - 14_32"` → invalid_format, only ':' is allowed."
+- `"01;12 - 14|32"` → invalid_format, only ':' is allowed."
 
 #### Hours must be exactly two digits
 

@@ -13,7 +13,7 @@ export const TIME_RANGE_ERRORS = {
   },
   INVALID_SEPARATOR: {
     type: "invalid_format",
-    message: "Only '-' separator is allowed",
+    message: "Only '-' separator is allowed in time range",
   },
   MULTIPLE_SEPERATOR: {
     type: "invalid_format",
