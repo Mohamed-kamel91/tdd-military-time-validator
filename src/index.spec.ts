@@ -180,6 +180,44 @@ describe("Military time validator", () => {
             }
           );
         });
+
+        describe("Hours must be exactly two digits", () => {
+          it.each([
+            ["1:12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["001:12 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["10:12 - 1:32", "end", ["INVALID_END_TIME_FORMAT"]],
+            ["10:12 - 001:32", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "1:12 - 1:32",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with invalid hour digits in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
+
+        describe("Minutes must be exactly two digits", () => {
+          it.each([
+            ["01:1 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["01:123 - 14:32", "start", ["INVALID_START_TIME_FORMAT"]],
+            ["10:12 - 14:1", "end", ["INVALID_END_TIME_FORMAT"]],
+            ["10:12 - 14:123", "end", ["INVALID_END_TIME_FORMAT"]],
+            [
+              "10:1 - 14:1",
+              "both",
+              ["INVALID_START_TIME_FORMAT", "INVALID_END_TIME_FORMAT"],
+            ],
+          ])(
+            "rejects time range '%s' with invalid minute digits in %s time",
+            (timeRange, _, errorKeys) => {
+              expectFormatErrors(timeRange, errorKeys);
+            }
+          );
+        });
       });
     });
   });

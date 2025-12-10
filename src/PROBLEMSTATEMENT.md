@@ -69,7 +69,6 @@ This project validates military time by:
 
 **Invalid:**
 
-
 - `"12:21 --"` → invalid_format, multiple '-' separator is not allowed."
 - `"- 17:23 -"` → invalid_format, multiple '-' separator is not allowed."
 - `"- 12:12 - 12:21"` → invalid_format, multiple '-' separator is not allowed."
@@ -115,7 +114,6 @@ This project validates military time by:
 - `"17:23 -"` → invalid_format, end time is missing."
 - `"17:23 - "` → invalid_format, end time is missing."
 
-
 #### Each time must contain exactly one ':' separator
 
 **Valid:**
@@ -128,7 +126,7 @@ This project validates military time by:
 - `"01 12 - 14:32"` → invalid_format, ':' is required in start time."
 - `"01:12 - 1432"` → invalid_format, ':' is required in end time."
 - `"01:12 - 14 32"` → invalid_format, ':' is required in end time."
-- `"0112 - 14 32"` → invalid_format, ':' is required in both start and  times."
+- `"0112 - 14 32"` → invalid_format, ':' is required in both start and times."
 
 **Invalid (too many ':'):**
 
@@ -159,8 +157,11 @@ This project validates military time by:
 
 **Invalid:**
 
-- `"1:12 - 14:32"` → invalid_format, hour must be exactly two digits."
-- `"001:12 - 14:32"` → invalid_format, hour must be exactly two digits."
+- `"1:12 - 14:32"` → invalid_format, hour must be two digits in start time."
+- `"001:12 - 14:32"` → invalid_format, hour must be two digits in start time."
+- `"10:12 - 1:32"` → invalid_format, hour must be two digits in end time."
+- `"10:12 - 001:32"` → invalid_format, hour must be two digits in end time."
+- `"1:12 - 1:32"` → invalid_format, hour must be two digits in both times."
 
 #### Minutes must be exactly two digits
 
@@ -171,8 +172,11 @@ This project validates military time by:
 
 **Invalid:**
 
-- `"01:1 - 14:32"` → invalid_format, minutes must be exactly two digits."
-- `"01:123 - 14:32"` → invalid_format, minutes must be exactly two digits."
+- `"01:1 - 14:32"` → invalid_format, minutes must be two digits in start time."
+- `"01:123 - 14:32"` → invalid_format, minutes must be two digits in start time."
+- `"10:12 - 14:1"` → invalid_format, minutes must be two digits in end time."
+- `"10:12 - 14:123"` → invalid_format, minutes must be two digits in end time."
+- `""10:1 - 14:1""` → invalid_format, minutes must be two digits in both times."
 
 #### Time value must not include trailing characters
 
