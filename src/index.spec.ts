@@ -1,6 +1,6 @@
 import { MilitaryTimeValidator } from ".";
 import {
-  TIME_RANGE_ERRORS,
+  TIME_FORMAT_ERRORS,
   TIME_VALUE_ERRORS,
   TimeRangeErrorKey,
   TimeValueErrorKey,
@@ -16,7 +16,7 @@ describe("Military time validator", () => {
         "00:00-23:59",
         " 22:22 - 02:43 ",
       ])("knows '%s' is valid", (timeRange) => {
-        const result = MilitaryTimeValidator.isValidRange(timeRange);
+        const result = MilitaryTimeValidator.validate(timeRange);
         expect(result.isValid).toBe(true);
         expect(result.errors).toHaveLength(0);
       });
@@ -25,9 +25,9 @@ describe("Military time validator", () => {
     describe("Invalid time range formats", () => {
       describe("Time range must not be empty", () => {
         it.each(["", "  "])("rejects empty time range: '%s'", () => {
-          const result = MilitaryTimeValidator.isValidRange("");
+          const result = MilitaryTimeValidator.validate("");
           expect(result.isValid).toBe(false);
-          expect(result.errors).toContainEqual(TIME_RANGE_ERRORS.EMPTY);
+          expect(result.errors).toContainEqual(TIME_FORMAT_ERRORS.EMPTY);
         });
       });
 
@@ -35,10 +35,10 @@ describe("Military time validator", () => {
         it.each(["01:12", "01:12 14:32"])(
           "rejects time range '%s' when '-' separator is missing",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.MISSING_SEPARATOR
+              TIME_FORMAT_ERRORS.MISSING_SEPARATOR
             );
           }
         );
@@ -55,10 +55,10 @@ describe("Military time validator", () => {
         ])(
           "rejects time range '%s' with invalid separator '%s'",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.INVALID_SEPARATOR
+              TIME_FORMAT_ERRORS.INVALID_SEPARATOR
             );
           }
         );
@@ -75,10 +75,10 @@ describe("Military time validator", () => {
         ])(
           "rejects time range '%s' with multiple '-' seperators",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.MULTIPLE_SEPERATOR
+              TIME_FORMAT_ERRORS.MULTIPLE_SEPERATOR
             );
           }
         );
@@ -88,10 +88,10 @@ describe("Military time validator", () => {
         it.each(["-", " - "])(
           "rejects time range '%s' with missing start and end times",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.MISSING_TIMES
+              TIME_FORMAT_ERRORS.MISSING_TIMES
             );
           }
         );
@@ -99,10 +99,10 @@ describe("Military time validator", () => {
         it.each([" -17:23", "- 17:23", " - 17:23"])(
           "rejects time range '%s' with missing start time",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.MISSING_START_TIME
+              TIME_FORMAT_ERRORS.MISSING_START_TIME
             );
           }
         );
@@ -110,25 +110,26 @@ describe("Military time validator", () => {
         it.each(["12:23-", "17:23 -", "17:23 - "])(
           "rejects time range '%s' with missing end time",
           (timeRange) => {
-            const result = MilitaryTimeValidator.isValidRange(timeRange);
+            const result = MilitaryTimeValidator.validate(timeRange);
             expect(result.isValid).toBe(false);
             expect(result.errors).toContainEqual(
-              TIME_RANGE_ERRORS.MISSING_END_TIME
+              TIME_FORMAT_ERRORS.MISSING_END_TIME
             );
           }
         );
       });
 
       describe("Start/End times must be in 'HH:MM' format", () => {
-        const expectFormatErrors = (timeRange: string, errorKeys: string[]) => {
-          const expectedErrors = errorKeys.map(
-            (key) => TIME_RANGE_ERRORS[key as TimeRangeErrorKey]
-          );
+        const getTimeFormatErrors = (errors: string[]) =>
+          errors.map((key) => TIME_FORMAT_ERRORS[key as TimeRangeErrorKey]);
 
-          const result = MilitaryTimeValidator.isValidRange(timeRange);
-
+        const expectTimeFormatErrors = (
+          timeRange: string,
+          errors: string[]
+        ) => {
+          const result = MilitaryTimeValidator.validate(timeRange);
           expect(result.isValid).toBe(false);
-          expect(result.errors).toEqual(expectedErrors);
+          expect(result.errors).toEqual(getTimeFormatErrors(errors));
         };
 
         describe("Missing ':' separator", () => {
@@ -145,7 +146,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with missing colon in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -162,7 +163,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with multiple colons in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -181,7 +182,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with wrong separator in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -200,7 +201,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with invalid hour digits in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -219,7 +220,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with invalid minute digits in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -236,7 +237,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with missing hour in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -260,7 +261,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with missing minutes in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -277,7 +278,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time '%s' with AM/PM in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
 
@@ -292,7 +293,7 @@ describe("Military time validator", () => {
           ])(
             "rejects time range '%s' with trailing characters in %s time",
             (timeRange, _, errorKeys) => {
-              expectFormatErrors(timeRange, errorKeys);
+              expectTimeFormatErrors(timeRange, errorKeys);
             }
           );
         });
@@ -303,6 +304,12 @@ describe("Military time validator", () => {
   describe("Time Range Hours/Minutes bounds validation ('00:00 - 23:59')", () => {
     const getTimeValueErrors = (errors: string[]) =>
       errors.map((key) => TIME_VALUE_ERRORS[key as TimeValueErrorKey]);
+
+    const expectTimeValueErrors = (timeRange: string, errors: string[]) => {
+      const result = MilitaryTimeValidator.validate(timeRange);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toEqual(getTimeValueErrors(errors));
+    };
 
     describe("Hours must be between 00-23", () => {
       it.each([
@@ -316,14 +323,12 @@ describe("Military time validator", () => {
       ])(
         "reject time range '%s' with hour out of range in %s time",
         (timeRange, _, errors) => {
-          const result = MilitaryTimeValidator.isValidRange(timeRange);
-          expect(result.isValid).toBe(false);
-          expect(result.errors).toEqual(getTimeValueErrors(errors));
+          expectTimeValueErrors(timeRange, errors);
         }
       );
     });
 
-    describe("Minutes must be between 00-23", () => {
+    describe("Minutes must be between 00-59", () => {
       it.each([
         ["12:60 - 13:00", "start", ["INVALID_START_MINUTE_RANGE"]],
         ["12:99 - 13:00", "start", ["INVALID_START_MINUTE_RANGE"]],
@@ -344,9 +349,7 @@ describe("Military time validator", () => {
       ])(
         "reject time range '%s' with hour out of range in %s time",
         (timeRange, _, errors) => {
-          const result = MilitaryTimeValidator.isValidRange(timeRange);
-          expect(result.isValid).toBe(false);
-          expect(result.errors).toEqual(getTimeValueErrors(errors));
+          expectTimeValueErrors(timeRange, errors);
         }
       );
     });
